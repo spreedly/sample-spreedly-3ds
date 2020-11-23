@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+
+  <title>Spreedly Sample iFrame Payment Page</title>
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+  <!-- From https://github.com/spreedly/sample-payment-frame/blob/master/css/styles.css-->
+  <link rel="stylesheet" type="text/css" href="stylesheets/styles.css">
+
+  <script src="{{{CORE_URL}}}/iframe/iframe-v1.min.js"></script>
+
+  <!-- Demo specific UI css + JS-->
+  <link rel="stylesheet" type="text/css" href="stylesheets/custom.css">
+
+  <script src="./javascripts/spreedly-debug-utils.js"></script>
+
+  <!-- iframe setup boilerplate-->
+  <script src="./javascripts/spreedly-iframe-boilerplate.js"></script>
+
+  <script src="./javascripts/your-code.js"></script>
+</head>
+
+<body>
+
+  <div class="panel panel-default">
+    Choose a demo: <a href="/">Iframe</a> | <a href="express">Express</a>
+    <div class="panel-heading">
+      <h1>&nbsp;Spreedly 3DS / Iframe Demo</h1>
+    </div>
+
+    <div class="panel-body">
+      <div class="container">
+
+        <div class="transaction-result">
+          <div class="display-form hidden" id="purchase-success-container">
+            <h2>Success!</h2>
+            Transaction Token: <span id="purchase-success-container-token"></span>
+            <br>
+            <br>
+            To repeat, click <a href="javascript:window.location.reload()">here</a> to refresh, or use the Refresh
+            button on your browser.
+          </div>
+
+          <div class="display-form hidden" id="purchase-failure-container">
+            <h2>Failure!</h2>
+            Error: <span id="purchase-failure-container-token"></span>
+            <br>
+            <br>
+            To repeat, click the Refresh button on your browser.
+          </div>
+        </div>
+
+        <form id="payment-form" accept-charset="UTF-8" class="spf-form" method="POST" action="#"
+          onsubmit="submitPaymentForm(); return false;">
+          <div class="display-form" id="payment-form-container">
+            <input type="hidden" name="payment_method_token" id="payment_method_token" value="" />
+
+            <fieldset class="spf-fs-name">
+              <h2>3DS2 Options</h2>
+              <div class="spf-field spf-field-fname">
+                <label class="internal" for="spf-flow">Amount (Flow To Simulate)</label>
+
+                <select name="spf-flow" id="spf-flow">
+                  <option value="4">&euro; 0.04 - &checkmark; Full frictionless flow (imm. transaction flow)</option>
+                  <option value="10000" selected>&euro; 100.00 - &checkmark; - Direct challenge</option>
+                  <option value="9996">&euro; 99.96 - &cross; - Not Authenticated/Verified</option>
+                  <option value="9997">&euro; 99.97 - &cross; - Authentication/Account ver. can't be performed</option>
+                  <option value="9998">&euro; 99.98 - &cross; - Transaction will be denied</option>
+                  <option value="9999">&euro; 99.99 - &cross; - Verification rejected</option>
+                </select>
+                
+              </div>
+
+              <div class="spf-field spf-field-fname">
+                <label class="internal" for="spf-3ds1">Force 3DS1 Challenge</label>
+                <input class="spf-input-checkbox" type="checkbox" value="kickoff3ds1" id="spf-3ds1">
+              </div>
+            </fieldset>
+
+            <fieldset class="spf-fs-name">
+              <h2>Name</h2>
+              <div class="spf-field spf-field-fname">
+                <label class="internal" for="spf-fname">First Name</label>
+                <input type="text" class="spf-input-text" id="first_name" value="John">
+              </div>
+              <div class="spf-field spf-field-lname">
+                <label class="internal" for="spf-lname">Last Name</label>
+                <input type="text" class="spf-input-text" id="last_name" value="Doe">
+              </div>
+            </fieldset>
+
+            <fieldset class="spf-fs-cc">
+              <h2>Payment Details</h2>
+
+              <div class="spf-field">
+                <label class="spf-field-group spf-number">Credit Card Number</label>
+                <label class="spf-field-group spf-verification_value">CVV</label>
+                <div id="spreedly-number-test" class="spf-field-group spf-number spf-field-cc">
+                </div>
+                <div id="spreedly-cvv-test" class="spf-field-group spf-verification_value spf-field-cc">
+                </div>
+              </div>
+
+              <div class="spf-field spf-field-exp">
+                <label>Expiration Date</label>
+                <div class="spf-field-group spf-month">
+                  <input type="text" class="spf-input-text spf-exp" id="month" size="3" maxlength="2" placeholder="MM">
+                </div>
+                <span class="spf-exp-divider">/</span>
+                <div class="spf-field-group spf-year">
+                  <input type="text" class="spf-input-text spf-exp" id="year" size="5" maxlength="4" placeholder="YYYY">
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset class="spf-field-submit">
+              <input type="submit" class="button" value="Submit Payment">
+              <div id="message"></div>
+              <div id="errors"></div>
+            </fieldset>
+
+            <script id="spreedly-iframe" data-environment-key="{{SPREEDLY_ENV_KEY}}"
+              data-number-id="spreedly-number-test" data-cvv-id="spreedly-cvv-test">
+              </script>
+          </div>
+
+
+          <div class="spreedly-iframes">
+            <div id="deviceFingerprint" class="hidden">
+              <!-- this is supposed to be hidden/empty -->
+            </div>
+
+            <div id="hiddenChallenge" class="hidden sp3ds2-modal">
+              <div id="challengeContainer" class="sp3ds2-modal-content-full">
+                <!-- this is supposed to be hidden/empty -->
+              </div>
+            </div>
+          </div>
+
+        </form>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+
+      // ***************** Values passed from backend **********************
+      // {{! these section provided by mustache}}
+      // {{! notice triple brackets used to avoid escaping some values}}
+      var SPREEDLY_ENV_KEY = '{{{SPREEDLY_ENV_KEY}}}' || ''
+      var REDIRECT_URL = '{{{REDIRECT_URL}}}' || ''
+      var CALLBACK_URL = '{{{CALLBACK_URL}}}' || ''
+      var BASIC_AUTH_CREDS = '{{{BASIC_AUTH_CREDS}}}' || ''
+      var CORE_URL = '{{{CORE_URL}}}'
+      var BASE_URL = '{{{BASE_URL}}}'
+
+      // The accept header from your server side rendered page. You'll need to inject it into the page.
+      // ie: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'    
+      var HEADER_ACCEPT = '{{{HEADER_ACCEPT}}}'
+
+      // End - ***************** Values passed from backend **********************
+
+
+      // ***************** Basic Setup - Wire your functions into Spreedly API ************
+      Spreedly.init();
+
+      Spreedly.on('paymentMethod', onPaymentMethodFn);
+      Spreedly.on('3ds:status', on3DSstatusUpdatesFn)
+
+      /**
+      * Note: See `spreedly-3ds2-boilerplate.js` for implementation.
+      * @see {@link https://docs.spreedly.com/reference/iframe/v1/#errors|Errors}
+      * @see {@link https://docs.spreedly.com/reference/iframe/v1/#ready|Ready}
+      * @see {@link https://docs.spreedly.com/reference/iframe/v1/#fieldevent|FieldEvent}
+      */
+      Spreedly.on('errors', onErrorrsFn);
+      Spreedly.on('ready', onReadyFn);
+      Spreedly.on('fieldEvent', onFieldEventFn)
+
+      /**
+       * called by #on3DSstatusUpdatesFn()
+       * allows Spreedly 3DS2 to interact with your users 
+      */
+      function show3DSChallengeModal(event) {
+        // For the complete example see step #7 ("Show your modal")
+        // https://docs.spreedly.com/guides/3dsecure2/#integration
+        console.log("Displaying modal")
+        document.querySelector('#hiddenChallenge').className = "sp3ds2-modal"
+      }
+
+      /**
+       * Control of the UI is handed back to your application code
+       */
+      function updateUI(transactionData, isSuccess) {
+        // Clean up Spreedly's custom HTML elements
+        console.log(transactionData)
+        document.querySelector("#challengeContainer").innerHTML = ''
+        document.querySelector('#hiddenChallenge').className = "hidden"
+        document.querySelector('#payment-form-container').style.display = 'none';
+
+        // In lieu of a fancy UI, we'll just show the outcome of our 3DS call.
+
+        if (isSuccess) {
+          document.querySelector('#purchase-success-container').className="display-form"
+          document.querySelector('#purchase-success-container-token').innerHTML = transactionData.token
+        } else {
+          document.querySelector('#purchase-failure-container').className="display-form"
+          document.querySelector('#purchase-failure-container-token').innerHTML = transactionData.context
+        }
+      }
+
+    </script>
+</body>
+
+</html>

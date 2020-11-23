@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Spreedly 3DS + Express Demo</title>
+
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+  <!-- From https://github.com/spreedly/sample-payment-frame/blob/master/css/styles.css-->
+  <link rel="stylesheet" type="text/css" href="stylesheets/styles.css">
+
+
+  <script src="{{{CORE_URL}}}/iframe/iframe-v1.min.js"></script>
+  <script src="{{{CORE_URL}}}/iframe/express-2.min.js" id="express-script"></script>
+
+  <!-- Demo specific UI css-->
+  <link rel="stylesheet" type="text/css" href="stylesheets/custom.css">
+
+  <script src="./javascripts/spreedly-debug-utils.js"></script>
+  <script src="./javascripts/your-code.js"></script>
+
+
+  <script type="text/javascript">
+
+    // ***************** Values passed from backend **********************
+    // {{! these section provided by mustache}}
+    // {{! notice triple brackets used to avoid escaping some values}}
+    var SPREEDLY_ENV_KEY = '{{{SPREEDLY_ENV_KEY}}}' || ''
+    var CORE_URL = '{{{CORE_URL}}}'
+    var BASE_URL = '{{{BASE_URL}}}'
+
+    // The accept header from your server side rendered page. You'll need to inject it into the page.
+    // ie: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'    
+    var HEADER_ACCEPT = '{{{HEADER_ACCEPT}}}'
+
+    var environmentKey = SPREEDLY_ENV_KEY
+
+    // ***************** Express boilerplat-ish **********************
+    SpreedlyExpress.onInit(function () {
+        document.getElementById("ready-to-pay").disabled = false;
+    });
+
+    SpreedlyExpress.onPaymentMethod(function (token, formData) {
+        document.getElementById('full_name').value = formData["full_name"]
+        document.getElementById('month').value = formData["month"]
+        document.getElementById('year').value = formData["year"]
+        document.getElementById('token').value = token
+
+        onPaymentMethodFn(token, formData)
+      });
+
+    SpreedlyExpress.init(environmentKey, {
+        company_name: "Food 'n Stuff",
+        sidebar_top_description: "Please provide your CC info",
+        sidebar_bottom_description: "2 ground beef </br> 2 crows </br> 1 Spreedly 3DS",
+        amount: `&euro; 0`
+      });
+    
+    Spreedly.on('3ds:status', on3DSstatusUpdatesFn)
+
+
+    // ***************** UI Glue Code **********************
+    /**
+     * called by #on3DSstatusUpdatesFn()
+     * allows Spreedly 3DS2 to interact with your users 
+    */
+    function show3DSChallengeModal(event) {
+      // For the complete example see step #7 ("Show your modal")
+      // https://docs.spreedly.com/guides/3dsecure2/#integration
+      console.log("Displaying modal")
+      document.getElementById('hiddenChallenge').style.display = 'block';
+    }
+
+
+    /**
+    * Control of the UI is handed back to your application code
+    */
+    function updateUI(transactionData, isSuccess) {
+      // Clean up Spreedly's custom HTML elements
+      console.log(transactionData)
+      document.getElementById("challengeContainer").innerHTML = ''
+      document.getElementById('hiddenChallenge').style.display = 'none';
+      document.getElementById('payment-form-container').style.display = 'none';
+
+      // In lieu of a fancy UI, we'll just show the outcome of our 3DS call.
+
+      if (isSuccess) {
+        document.getElementById('purchase-success-container').style.display = 'block';
+        document.getElementById('purchase-success-container-token').innerHTML = transactionData.token
+        alert(`Sucesss!! Token: ${transactionData.token}\n\nCLICK OK TO RELOAD PAGE`)
+        window.location.reload()
+      } else {
+        document.getElementById('purchase-failure-container').style.display = 'block';
+        document.getElementById('purchase-failure-container-token').innerHTML = transactionData.context
+        alert(`Failure!! Error: ${transactionData.context}\n\nCLICK OK TO RELOAD PAGE`)
+        window.location.reload()
+      }
+    }
+
+    /**
+     *  Wraps how we launch Spreedly Express, refreshing its UI/options before it shows up.
+     */
+    function launchSpreedlyExpress() {
+      var amount = document.getElementById("spf-flow").value
+
+      var options = {
+        company_name: "Food 'n Stuff",
+        sidebar_top_description: "Please provide your CC info",
+        sidebar_bottom_description: "2 ground beef </br> 2 crows </br> 1 Spreedly 3DS",
+        amount: `&euro; ${(parseInt(amount) + 1012 + 400) / 100}`
+      }
+      SpreedlyExpress.setDisplayOptions(options);
+
+      SpreedlyExpress.openView();
+    }
+
+    /**
+     *  UI glue. Updates "totals" in checkout page.
+     */
+    function updateInvoiceTotal() {
+      var amount = document.getElementById("spf-flow").value
+      var amountUI = (parseInt(amount) + 1012 + 400) / 100
+
+      document.getElementById("spreedlyTotal").innerHTML = parseInt(amount) / 100
+      document.getElementById("invoiceTotal").innerHTML = `&euro; ${amountUI}`
+    }
+
+    /** 
+     * Wraps things we want to do upon first page load.
+     */
+    function initUI() {
+      updateInvoiceTotal();
+    }
+
+
+  </script>
+  <style>
+    #content {
+      width: 500px;
+      margin: 0 auto;
+    }
+
+    .results {
+      visibility: hidden;
+    }
+  </style>
+</head>
+
+<body onload="initUI()">
+
+  <div class="panel panel-default">
+    Choose a demo: <a href="/">Iframe</a> | <a href="express">Express</a>
+
+    <div class="panel-heading">
+      <h1>&nbsp;Spreedly 3DS / Express Demo</h1>
+    </div>
+
+    <div class="panel-body">
+
+      <div class="spreedly-iframes">
+        <div id="deviceFingerprint">
+          <!-- this is supposed to be hidden/empty -->
+        </div>
+
+        <div id="hiddenChallenge">
+          <div id="challengeContainer">
+            <!-- this is supposed to be hidden/empty -->
+          </div>
+        </div>
+      </div>
+
+      <div class="transaction-result">
+        <div class="display-form hidden" id="purchase-success-container">
+          <h2>Success!</h2>
+          Transaction Token: <span id="purchase-success-container-token"></span>
+          <br>
+          <br>
+          To repeat, click the Refresh button on your browser.
+        </div>
+
+        <div class="display-form hidden" id="purchase-failure-container">
+          <h2>Failure!</h2>
+          Error: <span id="purchase-failure-container-token"></span>
+          <br>
+          <br>
+          To repeat, click the Refresh button on your browser.
+        </div>
+      </div>
+
+      <div class="container" id="payment-form-container">
+        <h1> Food 'n 3DS Stuff </h1>
+        <h2> Invoice</h2>
+        <table class="table table-bordered table-striped table-hover table-condensed">
+          <tr>
+            <th>Item Number</th>
+            <th>Description</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Total</th>
+          </tr>
+          <tr>
+            <td>F-01</td>
+            <td>Ground Beef</td>
+            <td>2</td>
+            <td>10.12</td>
+            <td>10.12</td>
+          </tr>
+          <tr>
+            <td>S-03</td>
+            <td>Crow</td>
+            <td>2</td>
+            <td>2.00</td>
+            <td>4.00</td>
+          </tr>
+          <tr>
+            <td>Sp-3ds</td>
+            <td>Spreedly 3DS w/ SCA - Challenge :)</td>
+            <td>1</td>
+            <td>
+              <select name="spf-flow" id="spf-flow" onchange="updateInvoiceTotal(this)">
+                <option value="4">&euro; 0.04 - &checkmark; Full frictionless flow (imm. transaction flow)</option>
+                <option value="10000" selected>&euro; 100.00 - &checkmark; - Direct challenge</option>
+                <option value="9996">&euro; 99.96 - &cross; - Not Authenticated/Verified</option>
+                <option value="9997">&euro; 99.97 - &cross; - Authentication/Account ver. can't be performed</option>
+                <option value="9998">&euro; 99.98 - &cross; - Transaction will be denied</option>
+                <option value="9999">&euro; 99.99 - &cross; - Verification rejected</option>
+              </select>
+            </td>
+            <td id="spreedlyTotal"></td>
+          </tr>
+          <tr>
+            <td>Total</td>
+            <td></td>
+            <td>5 items</td>
+            <td></td>
+            <td id="invoiceTotal"></td>
+          </tr>
+        </table>
+        <br />
+        <div class="form-group">
+          <div class="col-sm-offset-3 col-sm-5">
+            <button id="ready-to-pay" onclick="launchSpreedlyExpress()" class="btn btn-primary btn-block"
+              disabled="true">Buy Now</button>
+            <hr>
+            <label class="internal" for="spf-3ds1">Force 3DS1 Challenge</label>
+            <input class="spf-input-checkbox" type="checkbox" value="kickoff3ds1" id="spf-3ds1">
+          </div>
+        </div>
+        <form class="form-horizontal" role="form" action="/result.html" method="GET" id="payment-form">
+
+
+          <div class="col-sm-offset-3 col-sm-5">
+            <input class="results" type="text" id="full_name" name="full_name" required>
+            <input class="results" type="text" id="month" name="month" required>
+            <input class="results" type="text" id="year" name="year" required>
+            <input class="results" type="text" id="token" name="payment_method_token" required>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>

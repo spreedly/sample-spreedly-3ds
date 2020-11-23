@@ -1,0 +1,21 @@
+{
+  "name": "sample-spreedly-3ds",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "nodemon -e js,html ./bin/www"
+  },
+  "dependencies": {
+    "axios": "^0.20.0",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "express": "~4.16.1",
+    "express-reload": "^1.2.0",
+    "http-errors": "~1.6.3",
+    "jade": "~1.11.0",
+    "morgan": "~1.9.1",
+    "mustache": "~4.0.1",
+    "mustache-express": "^1.3.0",
+    "nodemon": "^2.0.4"
+  }
+}
