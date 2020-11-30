@@ -55,9 +55,8 @@ router.get('/express', function (req, res, next) {
  * @see {@link https://docs.spreedly.com/reference/api/v1/#purchase}
 */
 router.post('/attempt-purchase', function (req, res, next) {
-  var purchaseUrl = `${CORE_URL}/v1/gateways/${GATEWAY_KEY}/purchase.json`
+  var purchaseUrl = `${CORE_URL}/v1/gateways/${GATEWAY_KEY}/authorize.json`
   console.debug(`Attempting purchase at ${purchaseUrl} with auth ${BASIC_AUTH_CREDS}`)
-
 
   var frontendTx = req.body.transaction
   console.debug(`frontendTx received = ${JSON.stringify(frontendTx)}`)

@@ -5,6 +5,9 @@
   "scripts": {
     "start": "nodemon -e js,html ./bin/www"
   },
+  "engines": {
+    "yarn": "1.22.x"
+  },
   "dependencies": {
     "axios": "^0.20.0",
     "cookie-parser": "~1.4.4",
