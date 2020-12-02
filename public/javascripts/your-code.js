@@ -121,6 +121,7 @@ function on3DSstatusUpdatesFn(event) {
       updateUI(event, true);
       break;
     case "finalization-timeout":
+      alert("Time-Out. User did not authenticate within expected timeout.")
     case "error":
       updateUI(event, false)
       break;
