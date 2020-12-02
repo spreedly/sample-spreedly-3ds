@@ -2,6 +2,8 @@
 
 This is a companion app to the instructions found in [our Web Integration Guide](http://docs.spreedly.com/guides/spreedly-3dsecure2-web/).
 
+You can also find a [live version](https://sample-spreedly-3ds.herokuapp.com/) running in Heroku.
+
 While this is _a way_ to integrate Spreedly 3DS in a very basic HTML+JS app, it's only meant to illustrate the concepts described in our guide. 
 
 Your app probably uses a framework or file structure that greatly differs from this (e.g. Angular, React, Vue); the "touch points" between your backend and frontend, and encapsulations of our event handling will look VERY different once you complete them.
