@@ -38,7 +38,7 @@ function onPaymentMethodFn(token, paymentMethodData) {
     browserInfo = Spreedly.ThreeDS.serialize(
       browser_size,
       HEADER_ACCEPT,
-      new SuspiciousBrowser()
+      new MockFallbackBrowser()
     );
   }
 
