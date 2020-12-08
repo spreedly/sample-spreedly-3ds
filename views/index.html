@@ -31,10 +31,16 @@
 <body>
 
   <div class="panel panel-default">
-    Choose a demo: <a href="/">Iframe</a> | <a href="express">Express</a>
     <div class="panel-heading">
       <h1>&nbsp;Spreedly 3DS / Iframe Demo</h1>
     </div>
+
+    <ul class="nav nav-pills">
+      <li role="presentation"><a href="/"><span class="glyphicon glyphicon-credit-card"
+            aria-hidden="true"></span>&nbsp;Iframe</a></li>
+      <li role="presentation"><a href="express"><span class="glyphicon glyphicon-sunglasses"
+            aria-hidden="true"></span>&nbsp;Express</a></li>
+    </ul>
 
     <div class="panel-body">
       <div class="container">
@@ -76,11 +82,12 @@
                   <option value="9999">&euro; 99.99</option>
                   <option value="10000" selected>&euro;100.00</option>
                 </select>
-                
+
                 <br>
                 <!-- Button trigger modal -->
                 <a href="#" class="stretched-link" data-toggle="modal" data-target="#myModal">
-                  Click to see test scenarios info
+                  <br>
+                  <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>Test scenarios info
                 </a>
 
                 <!-- Modal -->
@@ -221,6 +228,11 @@
 
         </form>
       </div>
+    </div>
+
+    <div class="panel-footer">
+      <a href="https://github.com/spreedly/sample-spreedly-3ds" target="_blank">GitHub Repo</a> | 
+      <a href="https://docs.spreedly.com/guides/spreedly-3dsecure2-web/" target="_blank">Spreedly 3D Secure Web Integration Guide</a>
     </div>
 
     <script type="text/javascript">

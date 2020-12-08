@@ -154,11 +154,17 @@
 <body onload="initUI()">
 
   <div class="panel panel-default">
-    Choose a demo: <a href="/">Iframe</a> | <a href="express">Express</a>
 
     <div class="panel-heading">
       <h1>&nbsp;Spreedly 3DS / Express Demo</h1>
     </div>
+
+    <ul class="nav nav-pills">
+      <li role="presentation"><a href="/"><span class="glyphicon glyphicon-credit-card"
+            aria-hidden="true"></span>&nbsp;Iframe</a></li>
+      <li role="presentation"><a href="express"><span class="glyphicon glyphicon-sunglasses"
+            aria-hidden="true"></span>&nbsp;Express</a></li>
+    </ul>
 
     <div class="panel-body">
 
@@ -234,7 +240,8 @@
               &nbsp;&nbsp;&nbsp;
               <!-- Button trigger modal -->
               <a href="#" class="stretched-link" data-toggle="modal" data-target="#myModal">
-                Click to see test scenarios info
+                <br><br>
+                <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>Test scenarios info
               </a>
 
               <!-- Modal -->
@@ -322,8 +329,8 @@
             <button id="ready-to-pay" onclick="launchSpreedlyExpress()" class="btn btn-primary btn-block"
               disabled="true">Buy Now</button>
             <hr>
-            <label class="internal" for="spf-3ds1">Force 3DS1 Challenge</label>
             <input class="spf-input-checkbox" type="checkbox" value="kickoff3ds1" id="spf-3ds1">
+            <label class="internal" for="spf-3ds1">Force 3DS1 Challenge</label>
           </div>
         </div>
         <form class="form-horizontal" role="form" action="/result.html" method="GET" id="payment-form">
@@ -339,7 +346,15 @@
 
       </div>
     </div>
+
+    <div class="panel-footer">
+      <a href="https://github.com/spreedly/sample-spreedly-3ds" target="_blank">GitHub Repo</a> | 
+      <a href="https://docs.spreedly.com/guides/spreedly-3dsecure2-web/" target="_blank">Spreedly 3D Secure Web Integration Guide</a>
+    </div>
+
   </div>
+
+
 
 </body>
 
