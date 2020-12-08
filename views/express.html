@@ -12,6 +12,8 @@
   <!-- From https://github.com/spreedly/sample-payment-frame/blob/master/css/styles.css-->
   <link rel="stylesheet" type="text/css" href="stylesheets/styles.css">
 
+  <script src=https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
   <script src="{{{CORE_URL}}}/iframe/iframe-v1.min.js"></script>
   <script src="{{{CORE_URL}}}/iframe/express-2.min.js" id="express-script"></script>
@@ -40,25 +42,25 @@
 
     // ***************** Express boilerplat-ish **********************
     SpreedlyExpress.onInit(function () {
-        document.getElementById("ready-to-pay").disabled = false;
+      document.getElementById("ready-to-pay").disabled = false;
     });
 
     SpreedlyExpress.onPaymentMethod(function (token, formData) {
-        document.getElementById('full_name').value = formData["full_name"]
-        document.getElementById('month').value = formData["month"]
-        document.getElementById('year').value = formData["year"]
-        document.getElementById('token').value = token
+      document.getElementById('full_name').value = formData["full_name"]
+      document.getElementById('month').value = formData["month"]
+      document.getElementById('year').value = formData["year"]
+      document.getElementById('token').value = token
 
-        onPaymentMethodFn(token, formData)
-      });
+      onPaymentMethodFn(token, formData)
+    });
 
     SpreedlyExpress.init(environmentKey, {
-        company_name: "Food 'n Stuff",
-        sidebar_top_description: "Please provide your CC info",
-        sidebar_bottom_description: "2 ground beef </br> 2 crows </br> 1 Spreedly 3DS",
-        amount: `&euro; 0`
-      });
-    
+      company_name: "Food 'n Stuff",
+      sidebar_top_description: "Please provide your CC info",
+      sidebar_bottom_description: "2 ground beef </br> 2 crows </br> 1 Spreedly 3DS",
+      amount: `&euro; 0`
+    });
+
     Spreedly.on('3ds:status', on3DSstatusUpdatesFn)
 
 
@@ -221,13 +223,88 @@
             <td>1</td>
             <td>
               <select name="spf-flow" id="spf-flow" onchange="updateInvoiceTotal(this)">
-                <option value="4">&euro; 0.04 - &checkmark; Full frictionless flow (imm. transaction flow)</option>
-                <option value="10000" selected>&euro; 100.00 - &checkmark; - Direct challenge</option>
-                <option value="9996">&euro; 99.96 - &cross; - Not Authenticated/Verified</option>
-                <option value="9997">&euro; 99.97 - &cross; - Authentication/Account ver. can't be performed</option>
-                <option value="9998">&euro; 99.98 - &cross; - Transaction will be denied</option>
-                <option value="9999">&euro; 99.99 - &cross; - Verification rejected</option>
+                <option value="4">&euro; 0.04</option>
+                <option value="9996">&euro; 99.96</option>
+                <option value="9997">&euro; 99.97</option>
+                <option value="9998">&euro; 99.98</option>
+                <option value="9999">&euro; 99.99</option>
+                <option value="10000" selected>&euro; 100.00</option>
               </select>
+
+              &nbsp;&nbsp;&nbsp;
+              <!-- Button trigger modal -->
+              <a href="#" class="stretched-link" data-toggle="modal" data-target="#myModal">
+                Click to see test scenarios info
+              </a>
+
+              <!-- Modal -->
+              <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                          aria-hidden="true">&times;</span></button>
+                      <h4 class="modal-title" id="myModalLabel">Test Scenarios</h4>
+                    </div>
+                    <div class="modal-body">
+                      <table class="table">
+                        <thead>
+                          <tr>
+                            <th>Amount in cents</th>
+                            <th>Response Status</th>
+                            <th>Flow</th>
+                            <th>Description</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>4</td>
+                            <td>Y</td>
+                            <td>Frictionless</td>
+                            <td>Authentication/account verified</td>
+                          </tr>
+                          <tr>
+                            <td>9996</td>
+                            <td>A</td>
+                            <td>Frictionless</td>
+                            <td>ACS could not be reached, but Authentication/account verification performed by issuing
+                              bank
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>9997</td>
+                            <td>U</td>
+                            <td>Denied</td>
+                            <td>Authentication/account verification could not be performed, transaction fails</td>
+                          </tr>
+                          <tr>
+                            <td>9998</td>
+                            <td>N</td>
+                            <td>Denied</td>
+                            <td>Not authenticated/account not verified, transaction fails</td>
+                          </tr>
+                          <tr>
+                            <td>9999</td>
+                            <td>R</td>
+                            <td>Denied</td>
+                            <td>Authentication/account verification rejected, transaction fails</td>
+                          </tr>
+                          <tr>
+                            <td>10000</td>
+                            <td>C</td>
+                            <td>Challenge</td>
+                            <td>Authentication requires Challenge by issuing bank, handled by Lifecycle</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                  </div>
+                </div>
+              </div> <!-- end modal-->
+
             </td>
             <td id="spreedlyTotal"></td>
           </tr>

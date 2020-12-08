@@ -72,7 +72,8 @@ function onPaymentMethodFn(token, paymentMethodData) {
           }, true);
           break;
         case "error":
-          alert("An error occurred between backend and Spreedly API. Investigate your server logs.");
+          console.log(data)
+          alert(`An error occurred between your backend and Spreedly API. Investigate your server logs for token ${data.token}.`);
           break;
         case "pending":
           // looks like user will have to authenticate, no worries, Spreedly Lifecycle has you covered.
@@ -121,7 +122,8 @@ function on3DSstatusUpdatesFn(event) {
       updateUI(event, true);
       break;
     case "finalization-timeout":
-      alert("Time-Out. User did not authenticate within expected timeout.")
+      updateUI({context: 'Time-Out. User did not authenticate within expected timeout.'}, false)
+      break;
     case "error":
       updateUI(event, false)
       break;
