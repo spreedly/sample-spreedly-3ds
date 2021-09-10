@@ -69,7 +69,7 @@ router.post('/attempt-purchase', function (req, res, next) {
       browser_info: frontendTx.browserData,
       redirect_url: REDIRECT_URL,
       callback_url: CALLBACK_URL,
-      sca_provider_key: `${SCA_PROVIDER_KEY}`
+      //sca_provider_key: `${SCA_PROVIDER_KEY}`
     }
   }
 
