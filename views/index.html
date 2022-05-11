@@ -75,11 +75,11 @@
                 <label class="internal" for="spf-flow">Amount</label>
 
                 <select name="spf-flow" id="spf-flow" onchange="updateInfoBlob(this)">
-                  <option value="4">&euro; 0.04</option>
-                  <option value="9996">&euro; 99.96</option>
-                  <option value="9997">&euro; 99.97</option>
-                  <option value="9998">&euro; 99.98</option>
-                  <option value="9999">&euro; 99.99</option>
+                  <option value="1000">&euro; 10.00</option>
+                  <option value="2500">&euro; 25.00</option>
+                  <option value="5000">&euro; 50.00</option>
+                  <option value="7500">&euro; 75.00</option>
+                  <option value="9000">&euro; 90.00</option>
                   <option value="10000" selected>&euro;100.00</option>
                 </select>
 
@@ -104,47 +104,38 @@
                           <thead>
                             <tr>
                               <th>Amount in cents</th>
-                              <th>Response Status</th>
                               <th>Flow</th>
                               <th>Description</th>
                             </tr>
                           </thead>
                           <tbody>
                             <tr>
-                              <td>4</td>
-                              <td>Y</td>
-                              <td>Frictionless</td>
-                              <td>Authentication/account verified</td>
+                              <td>10</td>
+                              <td>Authenticated</td>
+                              <td>Frictionless authenticated success</td>
                             </tr>
                             <tr>
-                              <td>9996</td>
-                              <td>A</td>
-                              <td>Frictionless</td>
-                              <td>ACS could not be reached, but Authentication/account verification performed by issuing
-                                bank
-                              </td>
+                              <td>2500</td>
+                              <td>Authenticated</td>
+                              <td>Frictionless authenticated low value exemption requested</td>
                             </tr>
                             <tr>
-                              <td>9997</td>
-                              <td>U</td>
-                              <td>Denied</td>
-                              <td>Authentication/account verification could not be performed, transaction fails</td>
+                              <td>5000</td>
+                              <td>Authenticated</td>
+                              <td>Frictionless authenticated transaction risk analysis exemption requested</td>
                             </tr>
                             <tr>
-                              <td>9998</td>
-                              <td>N</td>
-                              <td>Denied</td>
-                              <td>Not authenticated/account not verified, transaction fails</td>
+                              <td>7500</td>
+                              <td>Authenticated</td>
+                              <td>Frictionless authenticated low value exemption requested but not satisfied</td>
                             </tr>
                             <tr>
-                              <td>9999</td>
-                              <td>R</td>
-                              <td>Denied</td>
-                              <td>Authentication/account verification rejected, transaction fails</td>
+                              <td>9000</td>
+                              <td>Not authenticated</td>
+                              <td>Mocked immediate failure</td>
                             </tr>
                             <tr>
                               <td>10000</td>
-                              <td>C</td>
                               <td>Challenge</td>
                               <td>Authentication requires Challenge by issuing bank, handled by Lifecycle</td>
                             </tr>
@@ -286,6 +277,7 @@
       function updateUI(transactionData, isSuccess) {
         // Clean up Spreedly's custom HTML elements
         console.log(transactionData)
+        console.log(transactionData.context)
         document.querySelector("#challengeContainer").innerHTML = ''
         document.querySelector('#hiddenChallenge').className = "hidden"
         document.querySelector('#payment-form-container').style.display = 'none';
@@ -297,7 +289,7 @@
           document.querySelector('#purchase-success-container-token').innerHTML = transactionData.token
         } else {
           document.querySelector('#purchase-failure-container').className = "display-form"
-          document.querySelector('#purchase-failure-container-token').innerHTML = transactionData.context
+          document.querySelector('#purchase-failure-container-token').innerHTML = transactionData.token + ' ' + (transactionData.context || transactionData.message)
         }
       }
 

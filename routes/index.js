@@ -11,6 +11,16 @@ const CALLBACK_URL = process.env.CALLBACK_URL || 'http://to-be-set.ngrok.io'
 const BASIC_AUTH_CREDS = process.env.BASIC_AUTH_CREDS || '<base 64 encoded credentials>'
 const CORE_URL = process.env.CORE_URL || 'http://core.spreedly.com'
 const BASE_URL = process.env.BASE_URL || 'http://localhost:8080'
+const TEST_SCENARIOS = new Map();
+
+TEST_SCENARIOS.set('1000', {test_scenario: { scenario: 'authenticated'}})
+TEST_SCENARIOS.set('2500', {test_scenario: { scenario: 'authenticated'}, exemption_type: 'low_value_exemption'})
+TEST_SCENARIOS.set('5000', {test_scenario: { scenario: 'authenticated'}, exemption_type: 'transaction_risk_analysis_exemption', acquiring_bank_fraud_rate: 'level_one'})
+TEST_SCENARIOS.set('7500', {test_scenario: { scenario: 'authenticated'}, exemption_type: 'low_value_exemption'})
+TEST_SCENARIOS.set('9000', {test_scenario: { scenario: 'not_authenticated'}})
+TEST_SCENARIOS.set('10000', {test_scenario: { scenario: 'challenge'}})
+
+
 
 /* GET home page. IFrame-based example */
 router.get('/', function (req, res, next) {
@@ -69,7 +79,9 @@ router.post('/attempt-purchase', function (req, res, next) {
       browser_info: frontendTx.browserData,
       redirect_url: REDIRECT_URL,
       callback_url: CALLBACK_URL,
-      //sca_provider_key: `${SCA_PROVIDER_KEY}`
+      sca_provider_key: `${SCA_PROVIDER_KEY}`,
+      sca_authentication_parameters: 
+        TEST_SCENARIOS.get(String(frontendTx.amount))
     }
   }
 
@@ -89,15 +101,28 @@ router.post('/attempt-purchase', function (req, res, next) {
     // return frontend ONLY the data we need there.
     res.json({
       token: data.transaction.token,
-      state: data.transaction.state
+      state: data.transaction.state,
+      message: data.transaction.message
     })
   })
     .catch((e) => {
+      if (e.response.status == 422) {
+
+        res.json({
+          token: e.response.data.transaction.token,
+          state: e.response.data.transaction.state,
+          message: e.response.data.transaction.message
+        })
+        // Request was made and server responded with error
+        console.debug(e.response.data)
+        console.debug(e.response.data.transaction.token)
+      } else{
         console.debug(`Error accessing ${purchaseUrl}. Details: ${e}`)
         res.json({
           token: frontendTx.token,
           state: "error"
         })
+      }
       }
     );
 

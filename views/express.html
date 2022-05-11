@@ -15,7 +15,7 @@
   <script src=https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
-  <script src="{{{CORE_URL}}}/iframe/iframe-1.55.js"></script>
+  <script src="{{{CORE_URL}}}/iframe/iframe-v1.min.js"></script>
   <script src="{{{CORE_URL}}}/iframe/express-2.min.js" id="express-script"></script>
 
   <!-- Demo specific UI css-->
@@ -70,11 +70,11 @@
      * allows Spreedly 3DS2 to interact with your users 
     */
     function show3DSChallengeModal(event) {
-      // For the complete example see step #7 ("Show your modal")
-      // https://docs.spreedly.com/guides/3dsecure2/#integration
-      console.log("Displaying modal")
-      document.getElementById('hiddenChallenge').style.display = 'block';
-    }
+        // For the complete example see step #7 ("Show your modal")
+        // https://docs.spreedly.com/guides/3dsecure2/#integration
+        console.log("Displaying modal")
+        document.querySelector('#hiddenChallenge').className = "sp3ds2-modal"
+      }
 
 
     /**
@@ -96,8 +96,9 @@
         window.location.reload()
       } else {
         document.getElementById('purchase-failure-container').style.display = 'block';
-        document.getElementById('purchase-failure-container-token').innerHTML = transactionData.context
-        alert(`Failure!! Error: ${transactionData.context}\n\nCLICK OK TO RELOAD PAGE`)
+        document.getElementById('purchase-failure-container-token').innerHTML = transactionData.token
+        let message = transactionData.token + ' ' + (transactionData.context || transactionData.message)
+        alert(`Failure!! Error: ${message}\n\nCLICK OK TO RELOAD PAGE`)
         window.location.reload()
       }
     }
@@ -169,12 +170,12 @@
     <div class="panel-body">
 
       <div class="spreedly-iframes">
-        <div id="deviceFingerprint">
+        <div id="deviceFingerprint" class="hidden">
           <!-- this is supposed to be hidden/empty -->
         </div>
 
-        <div id="hiddenChallenge">
-          <div id="challengeContainer">
+        <div id="hiddenChallenge" class="hidden sp3ds2-modal">
+          <div id="challengeContainer" class="sp3ds2-modal-content-full">
             <!-- this is supposed to be hidden/empty -->
           </div>
         </div>
@@ -228,13 +229,13 @@
             <td>Spreedly 3DS w/ SCA - Challenge :)</td>
             <td>1</td>
             <td>
-              <select name="spf-flow" id="spf-flow" onchange="updateInvoiceTotal(this)">
-                <option value="4">&euro; 0.04</option>
-                <option value="9996">&euro; 99.96</option>
-                <option value="9997">&euro; 99.97</option>
-                <option value="9998">&euro; 99.98</option>
-                <option value="9999">&euro; 99.99</option>
-                <option value="10000" selected>&euro; 100.00</option>
+              <select name="spf-flow" id="spf-flow" onchange="updateInfoBlob(this)">
+                <option value="1000">&euro; 10.00</option>
+                <option value="2500">&euro; 25.00</option>
+                <option value="5000">&euro; 50.00</option>
+                <option value="7500">&euro; 75.00</option>
+                <option value="9000">&euro; 90.00</option>
+                <option value="10000" selected>&euro;100.00</option>
               </select>
 
               &nbsp;&nbsp;&nbsp;
@@ -258,47 +259,38 @@
                         <thead>
                           <tr>
                             <th>Amount in cents</th>
-                            <th>Response Status</th>
                             <th>Flow</th>
                             <th>Description</th>
                           </tr>
                         </thead>
                         <tbody>
                           <tr>
-                            <td>4</td>
-                            <td>Y</td>
-                            <td>Frictionless</td>
-                            <td>Authentication/account verified</td>
+                            <td>10</td>
+                            <td>Authenticated</td>
+                            <td>Frictionless authenticated success</td>
                           </tr>
                           <tr>
-                            <td>9996</td>
-                            <td>A</td>
-                            <td>Frictionless</td>
-                            <td>ACS could not be reached, but Authentication/account verification performed by issuing
-                              bank
-                            </td>
+                            <td>2500</td>
+                            <td>Authenticated</td>
+                            <td>Frictionless authenticated low value exemption requested</td>
                           </tr>
                           <tr>
-                            <td>9997</td>
-                            <td>U</td>
-                            <td>Denied</td>
-                            <td>Authentication/account verification could not be performed, transaction fails</td>
+                            <td>5000</td>
+                            <td>Authenticated</td>
+                            <td>Frictionless authenticated transaction risk analysis exemption requested</td>
                           </tr>
                           <tr>
-                            <td>9998</td>
-                            <td>N</td>
-                            <td>Denied</td>
-                            <td>Not authenticated/account not verified, transaction fails</td>
+                            <td>7500</td>
+                            <td>Authenticated</td>
+                            <td>Frictionless authenticated low value exemption requested but not satisfied</td>
                           </tr>
                           <tr>
-                            <td>9999</td>
-                            <td>R</td>
-                            <td>Denied</td>
-                            <td>Authentication/account verification rejected, transaction fails</td>
+                            <td>9000</td>
+                            <td>Not authenticated</td>
+                            <td>Mocked immediate failure</td>
                           </tr>
                           <tr>
                             <td>10000</td>
-                            <td>C</td>
                             <td>Challenge</td>
                             <td>Authentication requires Challenge by issuing bank, handled by Lifecycle</td>
                           </tr>

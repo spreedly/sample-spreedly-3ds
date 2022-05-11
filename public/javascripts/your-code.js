@@ -68,9 +68,17 @@ function onPaymentMethodFn(token, paymentMethodData) {
           // congrats the call between the backend and Spreedly API 
           // succeeded w/o the banks requiring 3DS authentication!
           updateUI({
-            token: data.token
+            token: data.token,
+            message: data.message
           }, true);
           break;
+        case "failed":
+            // Authentication failed
+            updateUI({
+              token: data.token,
+              message: data.message
+            }, false);
+            break;
         case "error":
           console.log(data)
           alert(`An error occurred between your backend and Spreedly API. Investigate your server logs for token ${data.token}.`);
