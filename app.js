@@ -1,6 +1,5 @@
 var createError = require('http-errors');
 var express = require('express');
-var reload = require('express-reload')
 
 var path = require('path');
 var cookieParser = require('cookie-parser');
@@ -9,7 +8,6 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 
 var port = process.env.PORT || 8081;
-
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
