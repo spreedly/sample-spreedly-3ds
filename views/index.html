@@ -12,7 +12,7 @@
   <!-- From https://github.com/spreedly/sample-payment-frame/blob/master/css/styles.css-->
   <link rel="stylesheet" type="text/css" href="stylesheets/styles.css">
 
-  <script src="{{{CORE_URL}}}/iframe/iframe-v1.min.js"></script>
+  <script src="{{{CORE_URL}}}/iframe/iframe-3ds.min.js"></script>
 
   <!-- Demo specific UI css + JS-->
   <link rel="stylesheet" type="text/css" href="stylesheets/custom.css">
@@ -198,10 +198,6 @@
               <div id="message"></div>
               <div id="errors"></div>
             </fieldset>
-
-            <script id="spreedly-iframe" data-environment-key="{{SPREEDLY_ENV_KEY}}"
-              data-number-id="spreedly-number-test" data-cvv-id="spreedly-cvv-test">
-              </script>
           </div>
 
 
@@ -245,7 +241,7 @@
 
 
       // ***************** Basic Setup - Wire your functions into Spreedly API ************
-      Spreedly.init();
+      Spreedly.init('{{{SPREEDLY_ENV_KEY}}}', {numberEl: 'spreedly-number-test', cvvEl: 'spreedly-cvv-test'});
 
       Spreedly.on('paymentMethod', onPaymentMethodFn);
       Spreedly.on('3ds:status', on3DSstatusUpdatesFn)
