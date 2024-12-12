@@ -73,7 +73,7 @@ function submitPaymentForm() {
   // master form *to* the payment frame form. Add the following if
   // you're displaying the address:
   // ['address1', 'address2', 'city', 'state', 'zip', 'country']
-  var paymentMethodFields = ['first_name', 'last_name', 'month', 'year', 'address1', 'address2', 'city', 'state', 'zip', 'country']
+  var paymentMethodFields = ['first_name', 'last_name', 'month', 'year', 'address1', 'address2', 'city', 'state', 'zip', 'country', 'email']
   options = {};
   for (var i = 0; i < paymentMethodFields.length; i++) {
     var field = paymentMethodFields[i];
