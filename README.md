@@ -57,6 +57,7 @@ Note: Gitignore is configured to ignore the file `start-server.sh` and  protect 
 
 If you need to prevent CORS from breaking calls from your localhost to your `*.spreedly.com` URLs you will need to disable CORS. In Chrome you can install an extension such as [CORS Unblock](https://chrome.google.com/webstore/detail/cors-unblock/lfhmikememgdcahcdlaciloancbhjino/related?hl=en), and in Safari you can use the built-in option to do so.
 
+Note: Be sure to turn off the extension before testing in a remote deployment such as heroku. If you need to use the extension while using this app where it is running remotely you probably have a real CORS issue that you needs to be examined.
 
 ## NGROK
 
