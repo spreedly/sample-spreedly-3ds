@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
 
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://*.spreedly.com https://ajax.googleapis.com https://maxcdn.bootstrapcdn.com https://www.datadoghq-browser-agent.com 'unsafe-inline'; child-src https://*.spreedly.com; frame-src https://*.spreedly.com; connect-src https://*.spreedly.com https://www.datadoghq-browser-agent.com; style-src 'self' https://maxcdn.bootstrapcdn.com; font-src https://maxcdn.bootstrapcdn.com" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://*.spreedly.com https://ajax.googleapis.com https://maxcdn.bootstrapcdn.com https://www.datadoghq-browser-agent.com 'unsafe-inline'; child-src https://*.spreedly.com; frame-src https://*.spreedly.com; connect-src 'self' https://*.spreedly.com https://www.datadoghq-browser-agent.com; style-src 'self' https://maxcdn.bootstrapcdn.com; font-src https://maxcdn.bootstrapcdn.com" />
 
   <title>Spreedly Sample iFrame Payment Page</title>
   <!-- Latest compiled and minified CSS -->
@@ -76,7 +76,7 @@
               <div class="spf-field spf-field-fname">
                 <label class="internal" for="spf-flow">Amount</label>
 
-                <select name="spf-flow" id="spf-flow" onchange="updateInfoBlob(this)">
+                <select name="spf-flow" id="spf-flow">
                   <option value="1000">&euro; 10.00</option>
                   <option value="2500">&euro; 25.00</option>
                   <option value="2999">&euro; 29.99</option>
