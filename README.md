@@ -42,7 +42,7 @@ CALLBACK_URL=http://your-server.ngrok.io/callback \
 BASIC_AUTH_CREDS="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" \
 SCA_PROVIDER_KEY=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX \
 BASE_URL=http://your-server.ngrok.io \
-CORE_URL=http://core.spreedly.com \
+CORE_URL=https://core.spreedly.com \
     yarn start
 ```
 

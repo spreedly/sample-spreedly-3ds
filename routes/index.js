@@ -9,7 +9,7 @@ const SCA_PROVIDER_KEY = process.env.SCA_PROVIDER_KEY || 'NOT SET'
 const REDIRECT_URL = process.env.REDIRECT_URL || 'http://to-be-set.ngrok.io'
 const CALLBACK_URL = process.env.CALLBACK_URL || 'http://to-be-set.ngrok.io'
 const BASIC_AUTH_CREDS = process.env.BASIC_AUTH_CREDS || '<base 64 encoded credentials>'
-const CORE_URL = process.env.CORE_URL || 'http://core.spreedly.com'
+const CORE_URL = process.env.CORE_URL || 'https://core.spreedly.com'
 const BASE_URL = process.env.BASE_URL || 'http://localhost:8080'
 const TEST_SCENARIOS = new Map();
 
