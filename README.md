@@ -7,7 +7,7 @@
 >
 > For new integrations, use the [Checkout SDK](https://developer.spreedly.com/docs/tokenization). For 3DS, see [Spreedly 3DS solutions](https://developer.spreedly.com/docs/3ds-solutions). Turn on Enhanced Security for your environment in app.spreedly.com.
 
-This is a companion app to the instructions found in [our Web Integration Guide](http://docs.spreedly.com/guides/spreedly-3dsecure2-web/).
+This app was originally written as a companion to our 3DS2 Global web integration guide, and is kept only as a historical reference. For current instructions, see the [3DS2 Global Integration Guide for Web](https://developer.spreedly.com/docs/3ds2-global-integration-guide-web) or [3DS with the Checkout SDK](https://developer.spreedly.com/docs/3ds-with-the-checkout-sdk). The current reference implementation is the [Checkout SDK sample app](https://github.com/spreedly/web-sdk-sample-app).
 
 While this is _a way_ to integrate Spreedly 3DS in a very basic HTML+JS app, it's only meant to illustrate the concepts described in our guide. 
 
